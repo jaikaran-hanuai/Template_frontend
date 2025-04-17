@@ -177,15 +177,36 @@ function Form() {
 
       if (!response.ok) {
         // If there are validation errors, show them
-        if (responseData.details && responseData.details.FormData) {
-          const formDataErrors = responseData.details.FormData;
-          if (formDataErrors.status === 'validation_error') {
-            const errorMessages = Object.values(formDataErrors.errors)
-              .map(error => error.errors)
-              .join('\n');
-            throw new Error(`Validation errors:\n${errorMessages}`);
+        if (responseData.status === 'validation_error') {
+          const fileErrors = responseData.details?.file_errors || {};
+          const formErrors = responseData.details?.FormData || {};
+        
+          let messages = [];
+        
+          // FormData Errors
+          if (formErrors.errors) {
+            messages.push("Form Errors:");
+            for (const [field, error] of Object.entries(formErrors.errors)) {
+              messages.push(`- ${field}: ${error.errors.join(", ")}`);
+            }
           }
+        
+          // File Errors
+          if (Object.keys(fileErrors).length > 0) {
+            messages.push("File Errors:");
+            for (const [fileName, records] of Object.entries(fileErrors)) {
+              records.forEach((err) => {
+                messages.push(
+                  `- ${fileName}_record_${err.record}: ${err.field} - ${err.message}`
+                );
+              });
+            }
+          }
+        
+          alert(messages.join("\n"));
+          return;
         }
+        
         throw new Error(responseData.message || `HTTP error! status: ${response.status}`);
       }
 
