@@ -29,7 +29,7 @@ function Form() {
   
   // Form submission states
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [output, setOutput] = useState(null);
+  
   
   // Active section state
   const [activeSection, setActiveSection] = useState(null);
@@ -280,7 +280,7 @@ function Form() {
         // Convert array to object with record keys
         const records = {};
         jsonData.forEach((row, index) => {
-          records[`record_${index + 1}`] = row;
+          records[{index }] = row;
         });
         allData[sheetName] = records;
       });
@@ -583,7 +583,6 @@ function Form() {
       setModalMessages([errorMessage]);
       setShowModal(true);
     } finally {
-      setOutput(jsonData); // Store output data
       setIsSubmitting(false);
     }
   };
@@ -955,13 +954,7 @@ function Form() {
         </button>
       </div>
 
-      {/* Output Display */}
-      {output && (
-        <div className="output-box">
-          <pre>{JSON.stringify(output, null, 2)}</pre>
-        </div>
-      )}
-      
+   
       {/* Modal Display */}
       {showModal && (
         <Modal
