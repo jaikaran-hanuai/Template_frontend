@@ -267,15 +267,116 @@ function Form() {
    * Removes a file from the state
    * @param {String} key - File identifier to remove
    */
+  const dependencyMap = {
+    'Link': ['Alignment', 'DRP'],
+    'Road Inventory': ['Road Condition', 'Road Hazard']
+  };
+  
+  // Update the removeFile function to handle dependent files
   const removeFile = useCallback((key) => {
-    setFiles((prev) => ({ ...prev, [key]: null }));
+    setFiles(prev => {
+      const updatedFiles = { ...prev };
+      
+      // Remove the specified file and its dependencies
+      const removeFileAndDependencies = (fileKey) => {
+        delete updatedFiles[fileKey];
+        // Remove dependent files recursively
+        if (dependencyMap[fileKey]) {
+          dependencyMap[fileKey].forEach(dependentKey => {
+            removeFileAndDependencies(dependentKey);
+          });
+        }
+      };
+      
+      removeFileAndDependencies(key);
+      return updatedFiles;
+    });
+  
     setExcelJson((prev) => {
       const updated = { ...prev };
-      delete updated[key];
+      const removeDataAndDependencies = (fileKey) => {
+        delete updated[fileKey];
+        if (dependencyMap[fileKey]) {
+          dependencyMap[fileKey].forEach(dependentKey => {
+            removeDataAndDependencies(dependentKey);
+          });
+        }
+      };
+      
+      removeDataAndDependencies(key);
       return updated;
     });
+  
+    // Update section enablement states
+    setSections(prev => {
+      const newSections = { ...prev };
+      
+      // Handle Link dependencies
+      if (key === 'Link') {
+        newSections.map.files = prev.map.files.map(file => 
+          typeof file === 'object' ? { ...file, enabled: false } : file
+        );
+        newSections.map.files[0].enabled = true; // Keep Link enabled
+      }
+      
+      // Handle Road Inventory dependencies
+      if (key === 'Road Inventory') {
+        newSections.survey.files = prev.survey.files.map(file => 
+          typeof file === 'object' ? { ...file, enabled: false } : file
+        );
+        newSections.survey.files[0].enabled = true; // Keep Road Inventory enabled
+      }
+      
+      return newSections;
+    });
   }, []);
-
+  
+  // Update the useEffect for file dependencies
+  useEffect(() => {
+    // Handle Link section dependencies
+    setSections(prev => {
+      const linkExists = !!files['Link'];
+      const updatedMapFiles = prev.map.files.map(file => {
+        if (typeof file === 'object') {
+          return {
+            ...file,
+            enabled: file.name === 'Link' ? true : linkExists
+          };
+        }
+        return file;
+      });
+      
+      return {
+        ...prev,
+        map: {
+          ...prev.map,
+          files: updatedMapFiles
+        }
+      };
+    });
+  
+    // Handle Survey section dependencies
+    setSections(prev => {
+      const roadInventoryExists = !!files['Road Inventory'];
+      const updatedSurveyFiles = prev.survey.files.map(file => {
+        if (typeof file === 'object') {
+          return {
+            ...file,
+            enabled: file.name === 'Road Inventory' ? true : roadInventoryExists
+          };
+        }
+        return file;
+      });
+      
+      return {
+        ...prev,
+        survey: {
+          ...prev.survey,
+          files: updatedSurveyFiles
+        }
+      };
+    });
+  }, [files]);
   /**
    * Validates form inputs before submission
    * @returns {Boolean} - Whether all inputs are valid
