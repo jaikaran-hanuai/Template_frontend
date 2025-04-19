@@ -739,7 +739,7 @@ function Form() {
       transition={{ duration: 0.4 }}
     >
       <h3 className="section-title">Details</h3>
-      <label htmlFor="lgname">LG Name</label>
+      <label htmlFor="lgname">LG Name </label>
       <input
         id="lgname"
         type="text"
@@ -748,7 +748,7 @@ function Form() {
         onChange={(e) => handleInputChange(e, type, "lgName")}
         className="input-field"
       />
-      <label htmlFor="email">Email</label>
+      <label htmlFor="email">Email  </label>
       <input
         id="email"
         type="email"
@@ -757,7 +757,7 @@ function Form() {
         onChange={(e) => handleInputChange(e, type, "email")}
         className="input-field"
       />
-      <label htmlFor="phone">Phone</label>
+      <label htmlFor="phone">Phone  </label>
       <span className="phone-prefix">+62</span>
       <input
         id="phone"
@@ -927,7 +927,7 @@ function Form() {
               >
                 <div className="section-button-content">
                   <span className="section-label">{section.label}</span>
-                  {section.required && <span className="required-badge">Required</span>}
+                  {section.required && <span className="required-badge"></span>}
                   <div className="progress-bar">
                     <div 
                       className="progress-fill" 

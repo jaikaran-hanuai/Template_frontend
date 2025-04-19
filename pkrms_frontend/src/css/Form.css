@@ -135,7 +135,7 @@ body {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(to right, #1e88e5, #4caf50);
+  background: linear-gradient(to right,rgb(127, 218, 234),rgb(107, 202, 110));
   border-radius: 4px;
   transition: width 0.5s ease;
 }
