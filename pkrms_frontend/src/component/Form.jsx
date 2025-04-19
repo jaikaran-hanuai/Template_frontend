@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback,  useRef } from "react";
 import * as XLSX from "xlsx";
 import "../css/Form.css";
 import { fetchProvinceList, filterKabupatenList } from "../Services/services";
@@ -208,6 +208,45 @@ function Form() {
       [type]: { ...prev[type], [field]: value },
     }));
   }, []);
+
+
+  const prevSectionsRef = useRef(sections);
+
+  // Effect to handle section disable and file cleanup
+  useEffect(() => {
+    const prevSections = prevSectionsRef.current;
+
+    // Check each section for disable transitions
+    Object.entries(sections).forEach(([sectionKey, currentSection]) => {
+      const prevSection = prevSections[sectionKey];
+      
+      // If section was enabled and is now disabled
+      if (prevSection?.enabled && !currentSection.enabled) {
+        // Extract all file keys from the section
+        const filesToRemove = currentSection.files.map(file => 
+          typeof file === 'string' ? file : file.name
+        );
+
+        // Remove files from state
+        setFiles(prevFiles => {
+          const newFiles = { ...prevFiles };
+          filesToRemove.forEach(fileKey => delete newFiles[fileKey]);
+          return newFiles;
+        });
+
+        setExcelJson(prevExcel => {
+          const newExcel = { ...prevExcel };
+          filesToRemove.forEach(fileKey => delete newExcel[fileKey]);
+          return newExcel;
+        });
+      }
+    });
+
+    // Update previous sections reference
+    prevSectionsRef.current = sections;
+  }, [sections]); // Trigger when sections change
+
+
 
   /**
    * Handles file uploads and processes Excel files
