@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import "../css/Modal.css";
 
-const Modal = ({ show, title, messages, onClose }) => {
+const Modal = ({ show, title, onClose, children }) => {
   const closeBtnRef = useRef();
 
   useEffect(() => {
@@ -18,17 +18,17 @@ const Modal = ({ show, title, messages, onClose }) => {
   if (!show) return null;
 
   return (
-    <div 
-      className="modal-backdrop" 
+    <div
+      className="modal-backdrop"
       onClick={onClose}
-      role="dialog" 
+      role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
     >
       <div className="modal-box" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h3 id="modal-title" className="modal-title">{title}</h3>
-          <button 
+          <button
             className="modal-close-icon"
             onClick={onClose}
             aria-label="Close modal"
@@ -36,16 +36,12 @@ const Modal = ({ show, title, messages, onClose }) => {
             &times;
           </button>
         </div>
-        
-        <ul className="modal-message-list">
-          {messages.map((msg, idx) => (
-            <li key={idx} className="modal-message">{msg}</li>
-          ))}
-        </ul>
 
-        <button 
+        <div className="modal-body">{children}</div> {/* Render children dynamically */}
+
+        <button
           ref={closeBtnRef}
-          className="modal-close-btn" 
+          className="modal-close-btn"
           onClick={onClose}
         >
           Close

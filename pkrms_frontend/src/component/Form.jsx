@@ -22,6 +22,8 @@ function Form() {
   // Modal states
   const [modalMessages, setModalMessages] = useState([]);
   const [showModal, setShowModal] = useState(false);
+
+  
   
   // File management states
   const [files, setFiles] = useState({});
@@ -502,7 +504,7 @@ function Form() {
 
     try {
       // Make API request
-      const response = await fetch('http://127.0.0.1:8000/api/upload-data/', {
+      const response = await fetch('http://127.0.0.1:8006/api/upload-data/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(jsonData),
@@ -949,13 +951,14 @@ function Form() {
         {renderActiveSection()}
         
         {/* Submit Button */}
-        <button onClick={handleSubmit} className="button-submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Generating...' : 'Generate Report'}
+        <button  className="button-submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Checking Road Condition...' : 'Check Road Condition'}
         </button>
       </div>
+      
 
    
-      {/* Modal Display */}
+      
       {showModal && (
         <Modal
           show={showModal}
@@ -964,6 +967,10 @@ function Form() {
           onClose={() => setShowModal(false)}
         />
       )}
+
+
+
+      
     </motion.div>
   );
 }

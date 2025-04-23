@@ -57,7 +57,7 @@ const RoadConditionsTable = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('http://108.137.190.199/api/roadConditins/')
+    fetch('http://43.218.221.93:9012/api/roadConditins/')
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch');
         return res.json();
@@ -89,8 +89,9 @@ const RoadConditionsTable = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Road Condition Reports</h2>
-      <div className="overflow-x-auto shadow-xl rounded-lg border border-gray-200">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Uploaded Road condition Data</h2>
+      <div className="road-table-container max-h-[500px] overflow-auto shadow-xl rounded-lg border border-gray-200">
+
         <table className="min-w-full divide-y divide-gray-300 bg-white">
           <thead className="bg-blue-100">
             <tr>
